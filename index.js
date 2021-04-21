@@ -1,8 +1,8 @@
 const mongoose = require('mongoose'); 
 const Campsite = require('./models/campsite');  
 
-const url = 'mongobd://localhost:27017/nucampsite';
-const connect =mogoose.connect(url, {
+const url = 'mongodb://localhost:27017/nucampsite';
+const connect = mongoose.connect(url, {
     useCreateIndex: true, 
     useNewUrlParser: true, 
     useUnifiedTopology: true
@@ -11,13 +11,12 @@ const connect =mogoose.connect(url, {
 connect.then(() => {
     console.log('connected correctly to server'); 
 
-    const newCampsite = new Campsite({
+    Campsite.create({
        name: 'React Lake CampGround', 
        description: 'test' 
-    }); 
+    })
 
     // will tell us that the save documnet is saved or delected. 
-    newCampsite.save() 
     .then(campsite => {
         console.log(campsite); 
         return Campsite.find(); 
