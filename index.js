@@ -3,7 +3,8 @@ const Campsite = require('./models/campsite');
 
 const url = 'mongodb://localhost:27017/nucampsite';
 const connect = mongoose.connect(url, {
-    useCreateIndex: true, 
+    useCreateIndex: true,  
+    useFindAndModify: false,
     useNewUrlParser: true, 
     useUnifiedTopology: true
 }); 
@@ -19,10 +20,24 @@ connect.then(() => {
     // will tell us that the save documnet is saved or delected. 
     .then(campsite => {
         console.log(campsite); 
-        return Campsite.find(); 
+        return Campsite.findByIdAndUpdate(campsite._id, {
+            $set: { description: 'Update Test Document' } 
+        }, {
+            new: true
+        }); 
     }) 
-    .then(campsites => {
-        console.log(campsites); 
+    .then(campsite => {
+        console.log(campsite); 
+
+        campsite.comments.push({
+            rating: 5, 
+            text: 'What a magnificent view!', 
+            author: 'Tinus Lorvaldes'
+        }) 
+        return campsite.save();
+    })
+    .then(campsite => {
+        console.log(campsite); 
         return Campsite.deleteMany(); 
     })
     .then(() => {
